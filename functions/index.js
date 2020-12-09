@@ -62,6 +62,7 @@ const uploadImageToStorage = (file, clientfolder) => {
     const blobStream = fileUpload.createWriteStream({
       metadata: {
         contentType: file.mimetype,
+        public: true,
         metadata: {
           firebaseStorageDownloadTokens: uuidv4(),
         },
