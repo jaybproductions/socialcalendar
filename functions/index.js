@@ -37,7 +37,8 @@ const db = admin.firestore();
 
 const storage = new Storage({
   projectId: "social-media-calendar-84d06",
-  keyFilename: serviceAccount,
+  keyFilename:
+    "./social-media-calendar-84d06-firebase-adminsdk-lpmx8-ef636caa51.json",
 });
 
 const bucket = storage.bucket("gs://social-media-calendar-84d06.appspot.com");
