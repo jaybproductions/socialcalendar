@@ -151,7 +151,7 @@ app.post("/:client/uploadimage", multer.single("file"), (req, res) => {
   }
 });
 
-app.listen(port, () => {
+app.listen(process.env.PORT, () => {
   console.log("server is listening on", port);
 });
 
