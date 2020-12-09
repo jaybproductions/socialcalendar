@@ -151,7 +151,9 @@ app.post("/:client/uploadimage", multer.single("file"), (req, res) => {
   }
 });
 
-exports.app = functions.https.onRequest(app);
+app.listen(port, () => {
+  console.log("server is listening on", port);
+});
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions

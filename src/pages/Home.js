@@ -99,8 +99,8 @@ const Home = () => {
     formData.append("file", image);
     axios
       .post(
-        `https://us-central1-social-media-calendar-84d06.cloudfunctions.net/app/${client}/uploadimage` ||
-          `http://localhost:85/${client}/uploadimage`,
+        `http://localhost:5000/social-media-calendar-84d06/us-central1/app/btwebgroup/uploadimage` ||
+          /*`https://us-central1-social-media-calendar-84d06.cloudfunctions.net/app/${client}/uploadimage` */ `http://localhost:85/${client}/uploadimage`,
 
         formData,
         {}
