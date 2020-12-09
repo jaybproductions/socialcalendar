@@ -68,7 +68,7 @@ const uploadImageToStorage = (file, clientfolder) => {
     });
 
     blobStream.on("error", (error) => {
-      reject(new Error("Something is wrong! Unable to upload at the moment."));
+      reject(new Error(error));
     });
 
     blobStream.on("finish", () => {
@@ -139,7 +139,7 @@ app.post("/:client/uploadimage", multer.single("file"), (req, res) => {
     uploadImageToStorage(file, req.params.client)
       .then((success) => {
         console.log("file uploaded");
-        res.status(200).send({
+        return res.status(200).send({
           status: "success",
         });
       })
