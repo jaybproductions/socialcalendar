@@ -68,7 +68,7 @@ const uploadImageToStorage = (file, clientfolder) => {
     });
 
     blobStream.on("error", (error) => {
-      reject("Something is wrong! Unable to upload at the moment.");
+      reject(new Error("Something is wrong! Unable to upload at the moment."));
     });
 
     blobStream.on("finish", () => {

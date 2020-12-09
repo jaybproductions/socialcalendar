@@ -30,7 +30,7 @@ const Home = () => {
   const getEvents = () => {
     axios
       .get(
-        `https://us-central1-social-media-calendar-84d06.cloudfunctions.net/app/${client}/posts` ||
+        `https://socialcalendar123.herokuapp.com/${client}/posts` ||
           `http://localhost:85/${client}/posts`
       )
       .then((response) => {
@@ -63,7 +63,7 @@ const Home = () => {
 
   const handleAddEvent = () => {
     axios.put(
-      `https://us-central1-social-media-calendar-84d06.cloudfunctions.net/app/add/${client}` ||
+      `https://socialcalendar123.herokuapp.com/add/${client}` ||
         "http://localhost:85/add/btwebgroup",
       {
         id: textValue,
@@ -99,8 +99,8 @@ const Home = () => {
     formData.append("file", image);
     axios
       .post(
-        `http://localhost:5000/social-media-calendar-84d06/us-central1/app/btwebgroup/uploadimage` ||
-          /*`https://us-central1-social-media-calendar-84d06.cloudfunctions.net/app/${client}/uploadimage` */ `http://localhost:85/${client}/uploadimage`,
+        `https://socialcalendar123.herokuapp.com/btwebgroup/uploadimage` ||
+          `http://localhost:85/${client}/uploadimage`,
 
         formData,
         {}
