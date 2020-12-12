@@ -45,7 +45,15 @@ const Home = () => {
       )
       .then((response) => {
         console.log(response.data[0].posts);
-        setEventsArray(response.data[0].posts);
+        let events = response.data[0].posts;
+        let formattedEvents = events.forEach((event) => {
+          event.start = new Date(event.start);
+          event.end = new Date(event.end);
+        });
+
+        setEventsArray(events);
+
+        //setEventsArray(formattedEvents);
       });
   };
 
@@ -83,8 +91,8 @@ const Home = () => {
 
     addFormData.append("post", JSON.stringify(newPost));
     axios.put(
-      // `https://socialcalendar123.herokuapp.com/add/${client}` ||
-      "http://localhost:85/add/btwebgroup",
+      `https://socialcalendar123.herokuapp.com/add/${client}` ||
+        "http://localhost:85/add/btwebgroup",
       addFormData,
       {}
     );

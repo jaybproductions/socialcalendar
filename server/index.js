@@ -10,6 +10,7 @@ const { v4: uuidv4 } = require("uuid");
 const { format } = require("util");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
+require("dotenv").config();
 
 const app = express();
 const port = 85;
@@ -22,8 +23,8 @@ const port = 85;
 });*/
 
 const s3 = new AWS.S3({
-  accessKeyId: "AKIA52WU37SDUXAVEYUF",
-  secretAccessKey: "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",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
 });
 
 const uploadS3 = multer({
