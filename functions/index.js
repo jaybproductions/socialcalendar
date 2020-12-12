@@ -1,5 +1,3 @@
-const functions = require("firebase-functions");
-
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -7,18 +5,39 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const stream = require("stream");
 
-const Multer = require("multer");
+const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const { format } = require("util");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 
 const app = express();
 const port = 85;
 
-const multer = Multer({
+/*const multer = Multer({
   storage: Multer.memoryStorage(),
   limits: {
     fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
   },
+});*/
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
+
+const uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: "socialcalendarbtwg",
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, Date.now().toString() + "-" + file.originalname);
+    },
+  }),
 });
 
 const { Storage } = require("@google-cloud/storage");
@@ -35,55 +54,11 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-const storage = new Storage({
-  projectId: "social-media-calendar-84d06",
-  keyFilename:
-    "./social-media-calendar-84d06-firebase-adminsdk-lpmx8-ef636caa51.json",
-});
-
-const bucket = storage.bucket("gs://social-media-calendar-84d06.appspot.com");
-
 app.use(cors());
 app.use(morgan("short"));
 app.use(helmet());
-//app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
-//app.use(bodyParser.json({ limit: "50mb" }));
-app.use(multer.single("file"));
-
-const uploadImageToStorage = (file, clientfolder) => {
-  return new Promise((resolve, reject) => {
-    if (!file) {
-      reject("No image file");
-    }
-    let newFileName = `${file.originalname}_${Date.now()}`;
-
-    let fileUpload = bucket.file(`${clientfolder}/` + newFileName);
-
-    const blobStream = fileUpload.createWriteStream({
-      metadata: {
-        contentType: file.mimetype,
-        public: true,
-        metadata: {
-          firebaseStorageDownloadTokens: uuidv4(),
-        },
-      },
-    });
-
-    blobStream.on("error", (error) => {
-      reject(new Error(error));
-    });
-
-    blobStream.on("finish", () => {
-      // The public URL can be used to directly access the file via HTTP.
-      const url = format(
-        `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`
-      );
-      resolve(url);
-    });
-
-    blobStream.end(file.buffer);
-  });
-};
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.json({ limit: "50mb" }));
 
 app.get("/", (req, res) => {
   res.send("server is online");
@@ -117,13 +92,23 @@ app.get("/:clientid/posts", (req, res) => {
 });
 
 // update
-app.put("/add/:item_id", (req, res) => {
+app.put("/add/:item_id", uploadS3.single("file"), (req, res) => {
   (async () => {
-    console.log(req.body);
+    console.dir(JSON.parse(req.body.post));
+    let parsedData = JSON.parse(req.body.post);
+
+    console.log(req.file);
     try {
       const document = db.collection("clients").doc(req.params.item_id);
       await document.update({
-        posts: admin.firestore.FieldValue.arrayUnion(req.body),
+        posts: admin.firestore.FieldValue.arrayUnion({
+          id: parsedData.id,
+          imageUrl: req.file.location,
+          start: parsedData.start,
+          end: parsedData.end,
+          title: parsedData.title,
+          hashtags: parsedData.hashtags,
+        }),
       });
       return res.status(200).send();
     } catch (error) {
@@ -133,34 +118,6 @@ app.put("/add/:item_id", (req, res) => {
   })();
 });
 
-app.post("/:client/uploadimage", multer.single("file"), (req, res) => {
-  console.log("Upload Image");
-  console.log(req.file);
-  let file = req.file;
-  if (file) {
-    uploadImageToStorage(file, req.params.client)
-      .then((success) => {
-        console.log("file uploaded");
-        return res.status(200).send({
-          status: "success",
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  } else {
-    console.log("not file");
-  }
-});
-
 app.listen(process.env.PORT, () => {
   console.log("server is listening on", port);
 });
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });

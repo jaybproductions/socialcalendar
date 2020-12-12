@@ -20,12 +20,22 @@ const Home = () => {
   const [textValue, setTextValue] = useState("");
   const [eventsArray, setEventsArray] = useState([]);
   const [image, setImage] = useState("");
+  const [eventDetails, setEventDetails] = useState(null);
+  const [openEvent, setOpenEvent] = useState(false);
+  const [hashtags, setHashtags] = useState("");
   let params = useParams();
   let client = params.client;
 
   useEffect(() => {
     getEvents();
   }, [client]);
+
+  useEffect(() => {
+    if (eventDetails !== null) {
+      setOpenEvent(true);
+      console.log("this is running");
+    }
+  }, [eventDetails]);
 
   const getEvents = () => {
     axios
@@ -39,12 +49,9 @@ const Home = () => {
       });
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
+    setOpenEvent(false);
   };
   const events = eventsArray;
   const localizer = momentLocalizer(moment);
@@ -56,22 +63,30 @@ const Home = () => {
     setTime(results);
   };
 
-  const handleEventSelect = (event) => {
+  const handleEventSelect = async (event) => {
     console.log(event);
-    console.log("This is an event!");
+    setEventDetails([event]);
   };
 
   const handleAddEvent = () => {
+    console.log(textValue);
+    let addFormData = new FormData();
+    addFormData.append("file", image);
+    let newPost = {
+      id: textValue,
+      hashtags: hashtags,
+      imageUrl: "",
+      start: new Date(time),
+      end: new Date(time),
+      title: textValue,
+    };
+
+    addFormData.append("post", JSON.stringify(newPost));
     axios.put(
-      `https://socialcalendar123.herokuapp.com/add/${client}` ||
-        "http://localhost:85/add/btwebgroup",
-      {
-        id: textValue,
-        imageUrl: "",
-        start: new Date(time),
-        end: new Date(time),
-        title: textValue,
-      }
+      // `https://socialcalendar123.herokuapp.com/add/${client}` ||
+      "http://localhost:85/add/btwebgroup",
+      addFormData,
+      {}
     );
     setEventsArray([
       ...eventsArray,
@@ -91,23 +106,6 @@ const Home = () => {
     const file = event.target.files[0];
 
     setImage(file);
-  };
-
-  const handleFileUpload = async (event) => {
-    const filename = "testingfile4352";
-    let formData = new FormData();
-    formData.append("file", image);
-    axios
-      .post(
-        `https://socialcalendar123.herokuapp.com/btwebgroup/uploadimage` ||
-          `http://localhost:85/${client}/uploadimage`,
-
-        formData,
-        {}
-      )
-      .then(() => {
-        console.log("image uploaded");
-      });
   };
 
   return (
@@ -138,11 +136,16 @@ const Home = () => {
               value={textValue}
               onChange={(e) => setTextValue(e.target.value)}
             />
-            <img
-              src="gs://social-media-calendar-84d06.appspot.com/btwebgroup/testingfile2.jpg"
-              alt=""
+            <TextField
+              autoFocus
+              margin="dense"
+              id="hashtags"
+              label="Hashtags"
+              type="text"
+              fullWidth
+              value={hashtags}
+              onChange={(e) => setHashtags(e.target.value)}
             />
-            <button onClick={() => handleFileUpload()}>Upload</button>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="primary">
@@ -152,6 +155,31 @@ const Home = () => {
               Add
             </Button>
           </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={openEvent}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">View Post</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {eventDetails &&
+                Object.values(eventDetails).map((item, index) => (
+                  <>
+                    <center>
+                      <img width="50%" src={item.imageUrl} />
+                      <br />
+                      Post Description: {item.title}
+                      <br />
+                      Hashtags: {item.hashtags}
+                    </center>
+                  </>
+                ))}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions></DialogActions>
         </Dialog>
       </div>
       <div className="calendar">
