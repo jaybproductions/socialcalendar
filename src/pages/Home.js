@@ -11,8 +11,24 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
+
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+  },
+  media: {
+    height: 140,
+  },
+});
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -24,8 +40,11 @@ const Home = () => {
   const [openEvent, setOpenEvent] = useState(false);
   const [hashtags, setHashtags] = useState("");
   const [platform, setPlatform] = useState("");
+  const [description, setDescription] = useState("");
   let params = useParams();
   let client = params.client;
+
+  const classes = useStyles();
 
   useEffect(() => {
     getEvents();
@@ -89,6 +108,7 @@ const Home = () => {
       start: new Date(time),
       end: new Date(time),
       title: textValue,
+      description: description,
     };
 
     addFormData.append("post", JSON.stringify(newPost));
@@ -140,11 +160,21 @@ const Home = () => {
               autoFocus
               margin="dense"
               id="name"
-              label="Post Description"
+              label="Post Title"
               type="text"
               fullWidth
               value={textValue}
               onChange={(e) => setTextValue(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Post Description"
+              type="text"
+              fullWidth
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
             <TextField
               autoFocus
@@ -163,7 +193,7 @@ const Home = () => {
               label="Platform"
               type="text"
               fullWidth
-              value={hashtags}
+              value={platform}
               onChange={(e) => setPlatform(e.target.value)}
             />
           </DialogContent>
@@ -188,13 +218,39 @@ const Home = () => {
               {eventDetails &&
                 Object.values(eventDetails).map((item, index) => (
                   <>
-                    <center>
-                      <img width="50%" src={item.imageUrl} />
-                      <br />
-                      Post Description: {item.title}
-                      <br />
-                      Hashtags: {item.hashtags}
-                    </center>
+                    <Card className={classes.root}>
+                      <CardActionArea>
+                        <CardMedia
+                          className={classes.media}
+                          image={item.imageUrl}
+                          title="Contemplative Reptile"
+                        />
+                        <CardContent>
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {item.description}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                          >
+                            {item.title}
+                            <br />
+                            Hashtags: {item.hashtags}
+                            <br />
+                            Platform: {item.platform}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                      <CardActions>
+                        <Button size="small" color="primary">
+                          Share
+                        </Button>
+                        <Button size="small" color="primary">
+                          Learn More
+                        </Button>
+                      </CardActions>
+                    </Card>
                   </>
                 ))}
             </DialogContentText>

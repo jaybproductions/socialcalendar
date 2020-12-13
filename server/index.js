@@ -110,6 +110,7 @@ app.put("/add/:item_id", uploadS3.single("file"), (req, res) => {
           title: parsedData.title,
           hashtags: parsedData.hashtags,
           platform: parsedData.platform,
+          description: parsedData.description,
         }),
       });
       return res.status(200).send();
