@@ -14,11 +14,20 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 1000,
-    width: 500,
+    maxWidth: "100%",
+    width: "100%",
+    margin: "auto",
   },
   media: {
-    height: 500,
+    height: "50vh",
+    width: "100%",
+    objectFit: "fill",
+  },
+  modal: {
+    width: "100vw",
+    height: "100vh",
+    margin: "auto",
+    maxWidth: "md",
   },
 });
 
@@ -31,6 +40,7 @@ const EventModal = ({ openEvent, handleClose, eventDetails }) => {
         open={openEvent}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
+        fullWidth={true}
       >
         <DialogTitle id="form-dialog-title">View Post</DialogTitle>
         <DialogContent>
@@ -52,7 +62,7 @@ const EventModal = ({ openEvent, handleClose, eventDetails }) => {
                         <Typography
                           variant="body2"
                           color="textSecondary"
-                          component="p"
+                          component="article"
                         >
                           {item.description}
                           <br />

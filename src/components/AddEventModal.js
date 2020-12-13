@@ -8,6 +8,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import axios from "axios";
 
 const AddEventModal = ({
@@ -24,6 +26,7 @@ const AddEventModal = ({
   const [description, setDescription] = useState("");
   const [textValue, setTextValue] = useState("");
   const [updateEvents, setUpdateEvents] = useState(false);
+  const [fileError, setFileError] = useState(false);
 
   useEffect(() => {
     if (updateEvents) {
@@ -32,7 +35,16 @@ const AddEventModal = ({
     }
   }, [updateEvents]);
 
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   const handleAddEvent = () => {
+    if (!image) {
+      console.log("please choose file");
+      setFileError(true);
+      return;
+    }
     console.log(textValue);
     let addFormData = new FormData();
     addFormData.append("file", image);
@@ -59,7 +71,7 @@ const AddEventModal = ({
 
     setTimeout(() => {
       setUpdateEvents(true);
-    }, 1000);
+    }, 3000);
 
     setTimeout(() => {
       setUpdateEvents(false);
@@ -132,6 +144,15 @@ const AddEventModal = ({
             Add
           </Button>
         </DialogActions>
+        <Snackbar
+          open={fileError}
+          autoHideDuration={6000}
+          onClose={() => setFileError(false)}
+        >
+          <Alert onClose={() => setFileError(false)} severity="error">
+            Please choose a file to upload!
+          </Alert>
+        </Snackbar>
       </Dialog>
     </div>
   );

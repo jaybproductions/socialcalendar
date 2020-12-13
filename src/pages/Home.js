@@ -37,7 +37,6 @@ const Home = (props) => {
           `http://localhost:85/${client}/posts`
       )
       .then((response) => {
-        console.log(response.data[0].posts);
         let events = response.data[0].posts;
         events.forEach((event) => {
           event.start = new Date(event.start);
@@ -45,8 +44,6 @@ const Home = (props) => {
         });
 
         setEventsArray(events);
-
-        //setEventsArray(formattedEvents);
       });
   };
 
@@ -104,6 +101,31 @@ const Home = (props) => {
           style={{ height: "100vh" }}
           onSelectSlot={handleSelect}
           onSelectEvent={handleEventSelect}
+          eventPropGetter={(event, start, end, isSelected) => {
+            let newStyle = {
+              backgroundColor: "lightgrey",
+              color: "black",
+              borderRadius: "0px",
+              border: "none",
+              color: "black",
+            };
+
+            if (event.platform == "Facebook") {
+              newStyle.backgroundColor = "#3b5998";
+              newStyle.color = "white";
+            } else if (event.platform == "Instagram") {
+              newStyle.backgroundColor = "#F56040";
+            } else if (event.platform == "LinkedIn") {
+              newStyle.backgroundColor = "#0e76a8";
+            } else if (event.platform == "Twitter") {
+              newStyle.backgroundColor = "#00acee";
+            }
+
+            return {
+              className: "",
+              style: newStyle,
+            };
+          }}
         />
       </div>
     </div>
