@@ -23,6 +23,7 @@ const Home = () => {
   const [eventDetails, setEventDetails] = useState(null);
   const [openEvent, setOpenEvent] = useState(false);
   const [hashtags, setHashtags] = useState("");
+  const [platform, setPlatform] = useState("");
   let params = useParams();
   let client = params.client;
 
@@ -82,6 +83,7 @@ const Home = () => {
     addFormData.append("file", image);
     let newPost = {
       id: textValue,
+      platform: platform,
       hashtags: hashtags,
       imageUrl: "",
       start: new Date(time),
@@ -153,6 +155,16 @@ const Home = () => {
               fullWidth
               value={hashtags}
               onChange={(e) => setHashtags(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="platform"
+              label="Platform"
+              type="text"
+              fullWidth
+              value={hashtags}
+              onChange={(e) => setPlatform(e.target.value)}
             />
           </DialogContent>
           <DialogActions>
