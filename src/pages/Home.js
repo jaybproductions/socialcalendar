@@ -64,6 +64,8 @@ const Home = (props) => {
 
   const handleSelect = (date) => {
     const results = Object.values(date.slots).toString();
+    console.log(date.slots)
+    console.log(results)
     setOpen(true);
     setTime(results);
   };

@@ -7,6 +7,8 @@ import "./App.css";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import useAuth from "./hooks/useAuth";
+
+//Context Imports
 import UserContext from "./contexts/UserContext";
 
 function App() {

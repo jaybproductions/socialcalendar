@@ -45,14 +45,16 @@ const AddEventModal = ({
     }
 
     let addFormData = new FormData();
+    let times = time.split(',')
+  
     addFormData.append("file", image);
     let newPost = {
       id: textValue,
       platform: platform,
       hashtags: hashtags,
       imageUrl: "",
-      start: new Date(time),
-      end: new Date(time),
+      start: new Date(times[0]),
+      end: new Date(times[1]),
       title: textValue,
       description: description,
     };
