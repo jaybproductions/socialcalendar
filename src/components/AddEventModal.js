@@ -31,7 +31,6 @@ const AddEventModal = ({
   useEffect(() => {
     if (updateEvents) {
       getEvents();
-      console.log("getting events");
     }
   }, [updateEvents]);
 
@@ -41,11 +40,10 @@ const AddEventModal = ({
 
   const handleAddEvent = () => {
     if (!image) {
-      console.log("please choose file");
       setFileError(true);
       return;
     }
-    console.log(textValue);
+
     let addFormData = new FormData();
     addFormData.append("file", image);
     let newPost = {

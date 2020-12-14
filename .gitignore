@@ -6,7 +6,7 @@
 .pnp.js
 /server/.env
 /server/social-media-calendar-84d06-firebase-adminsdk-lpmx8-ef636caa51.json
-
+/firebase/config.js
 # testing
 /coverage
 

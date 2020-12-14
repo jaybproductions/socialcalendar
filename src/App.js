@@ -6,16 +6,22 @@ import "./App.css";
 //Route Imports
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import useAuth from "./hooks/useAuth";
+import UserContext from "./contexts/UserContext";
 
 function App() {
+  const [user, setUser] = useAuth();
   return (
     <>
-      <Switch>
-        <Redirect exact from="/" to="/home" />
-        <Route path="/home" component={Home} />
-        <Route path="/client/:client" component={Home} />
-        <Route path="/login" component={Login} />
-      </Switch>
+      {" "}
+      <UserContext.Provider value={{ user, setUser }}>
+        <Switch>
+          <Redirect exact from="/" to="/home" />
+          <Route path="/home" component={Home} />
+          <Route path="/client/:client" component={Home} />
+          <Route path="/login" component={Login} />
+        </Switch>
+      </UserContext.Provider>
     </>
   );
 }

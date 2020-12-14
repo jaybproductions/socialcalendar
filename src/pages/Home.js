@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -6,8 +6,15 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import EventModal from "../components/EventModal";
 import AddEventModal from "../components/AddEventModal";
+import Login from "../Auth/Login";
+import UserContext from "../contexts/UserContext";
+import firebase from "../firebase";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 const Home = (props) => {
+  const { user } = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState([]);
 
@@ -15,6 +22,7 @@ const Home = (props) => {
   const [image, setImage] = useState("");
   const [eventDetails, setEventDetails] = useState(null);
   const [openEvent, setOpenEvent] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
 
   let params = useParams();
   let client = params.client;
@@ -26,7 +34,6 @@ const Home = (props) => {
   useEffect(() => {
     if (eventDetails !== null) {
       setOpenEvent(true);
-      console.log("this is running");
     }
   }, [eventDetails]);
 
@@ -50,20 +57,23 @@ const Home = (props) => {
   const handleClose = () => {
     setOpen(false);
     setOpenEvent(false);
+    setOpenLogin(false);
   };
   const events = eventsArray;
   const localizer = momentLocalizer(moment);
 
   const handleSelect = (date) => {
-    console.log(date);
     const results = Object.values(date.slots).toString();
     setOpen(true);
     setTime(results);
   };
 
   const handleEventSelect = async (event) => {
-    console.log(event);
     setEventDetails([event]);
+  };
+
+  const handleOpenLogin = async (event) => {
+    setOpenLogin(true);
   };
 
   const handleFileRead = async (event) => {
@@ -72,22 +82,50 @@ const Home = (props) => {
     setImage(file);
   };
 
+  async function LogoutUser() {
+    try {
+      await firebase.logout();
+      props.history.push(`/client/${client}`);
+      console.log("youve logged out");
+    } catch (err) {
+      console.error("Unable to log out", err);
+    }
+  }
+
   return (
     <div className="home">
+      {!user ? (
+        <IconButton onClick={handleOpenLogin}>
+          <AccountCircleIcon style={{ color: "green" }}></AccountCircleIcon>
+          Login
+        </IconButton>
+      ) : (
+        <IconButton onClick={LogoutUser}>
+          <AccountCircleIcon style={{ color: "red" }}></AccountCircleIcon>
+          Logout
+        </IconButton>
+      )}
       <div className="dialog">
-        <AddEventModal
-          open={open}
-          time={time}
-          handleFileRead={handleFileRead}
-          handleClose={handleClose}
-          client={client}
-          image={image}
-          getEvents={getEvents}
-        />
+        {user && (
+          <AddEventModal
+            open={open}
+            time={time}
+            handleFileRead={handleFileRead}
+            handleClose={handleClose}
+            client={client}
+            image={image}
+            getEvents={getEvents}
+          />
+        )}
 
         <EventModal
           eventDetails={eventDetails}
           openEvent={openEvent}
+          handleClose={handleClose}
+        />
+        <Login
+          setOpenLogin={setOpenLogin}
+          openLogin={openLogin}
           handleClose={handleClose}
         />
       </div>
@@ -107,7 +145,6 @@ const Home = (props) => {
               color: "black",
               borderRadius: "0px",
               border: "none",
-              color: "black",
             };
 
             if (event.platform == "Facebook") {
