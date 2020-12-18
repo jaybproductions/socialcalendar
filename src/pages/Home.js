@@ -45,7 +45,7 @@ const Home = (props) => {
   const getEvents = () => {
     axios
       .get(
-        //`https://socialcalendar123.herokuapp.com/${userID}/${client}/posts` ||
+        `https://socialcalendar123.herokuapp.com/${userID}/${client}/posts` ||
           `http://localhost:85/${userID}/${client}/posts`
       )
       .then((response) => {
