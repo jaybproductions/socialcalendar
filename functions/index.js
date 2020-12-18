@@ -10,7 +10,6 @@ const { v4: uuidv4 } = require("uuid");
 const { format } = require("util");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
-require("dotenv").config();
 
 const app = express();
 const port = 85;
