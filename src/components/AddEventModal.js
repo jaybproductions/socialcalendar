@@ -20,6 +20,7 @@ const AddEventModal = ({
   client,
   image,
   getEvents,
+  userID
 }) => {
   const [hashtags, setHashtags] = useState("");
   const [platform, setPlatform] = useState("");
@@ -61,8 +62,8 @@ const AddEventModal = ({
 
     addFormData.append("post", JSON.stringify(newPost));
     axios.put(
-      `https://socialcalendar123.herokuapp.com/add/${client}` ||
-        `http://localhost:85/add/${client}`,
+      //`https://socialcalendar123.herokuapp.com/${userID}/add/${client}` ||
+        `http://localhost:85/${userID}/add/${client}`,
       addFormData,
       {}
     );

@@ -66,10 +66,10 @@ app.get("/", (req, res) => {
 });
 
 // get all clients
-app.get("/:clientid/posts", (req, res) => {
+app.get("/:userid/:clientid/posts", (req, res) => {
   (async () => {
     try {
-      let query = db.collection("clients");
+      let query = db.collection(req.params.userid);
       let response = [];
       await query.get().then((querySnapshot) => {
         let docs = querySnapshot.docs;
@@ -93,14 +93,14 @@ app.get("/:clientid/posts", (req, res) => {
 });
 
 // update
-app.put("/add/:item_id", uploadS3.single("file"), (req, res) => {
+app.put("/:userid/add/:item_id", uploadS3.single("file"), (req, res) => {
   (async () => {
     console.dir(JSON.parse(req.body.post));
     let parsedData = JSON.parse(req.body.post);
 
     console.log(req.file);
     try {
-      const document = db.collection("clients").doc(req.params.item_id);
+      const document = db.collection(req.params.userid).doc(req.params.item_id);
       await document.update({
         posts: admin.firestore.FieldValue.arrayUnion({
           id: parsedData.id,

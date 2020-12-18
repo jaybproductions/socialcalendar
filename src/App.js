@@ -20,7 +20,7 @@ function App() {
         <Switch>
           <Redirect exact from="/" to="/home" />
           <Route path="/home" component={Home} />
-          <Route path="/client/:client" component={Home} />
+          <Route path="/:userid/client/:client" component={Home} />
           <Route path="/login" component={Login} />
         </Switch>
       </UserContext.Provider>

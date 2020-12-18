@@ -13,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
+
 const Home = (props) => {
   const { user } = useContext(UserContext);
   const [open, setOpen] = useState(false);
@@ -26,10 +27,14 @@ const Home = (props) => {
 
   let params = useParams();
   let client = params.client;
+  let userID = params.userid
 
   useEffect(() => {
     getEvents();
-  }, [client]);
+    if(user) {
+      console.log(user.uid)
+    }
+  }, [client, userID]);
 
   useEffect(() => {
     if (eventDetails !== null) {
@@ -40,17 +45,41 @@ const Home = (props) => {
   const getEvents = () => {
     axios
       .get(
-        `https://socialcalendar123.herokuapp.com/${client}/posts` ||
-          `http://localhost:85/${client}/posts`
+        //`https://socialcalendar123.herokuapp.com/${userID}/${client}/posts` ||
+          `http://localhost:85/${userID}/${client}/posts`
       )
       .then((response) => {
-        let events = response.data[0].posts;
-        events.forEach((event) => {
-          event.start = new Date(event.start);
-          event.end = new Date(event.end);
-        });
+        try {
 
-        setEventsArray(events);
+          let check = response.data[0].posts
+          if(check == null) {
+            return;
+          }else {
+            let events = response.data[0].posts;
+            console.log(events)
+  
+          
+            events.forEach((event) => {
+              event.start = new Date(event.start);
+              if(event.end == null) {
+                event.end = new Date(event.start);
+              } else {
+                event.end = new Date(event.end);
+              }
+              
+            });
+    
+            setEventsArray(events);
+  
+          }
+
+        }catch(error) {
+
+          console.log(error)
+        }
+        
+          
+        
       });
   };
 
@@ -117,6 +146,7 @@ const Home = (props) => {
             client={client}
             image={image}
             getEvents={getEvents}
+            userID={userID}
           />
         )}
 
