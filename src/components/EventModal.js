@@ -19,9 +19,10 @@ const useStyles = makeStyles({
     margin: "auto",
   },
   media: {
-    height: "50vh",
+    height: 500,
     width: "100%",
-    objectFit: "fill",
+    margin: "auto",
+    objectFit: "contain",
   },
   modal: {
     width: "100vw",
@@ -50,25 +51,21 @@ const EventModal = ({ openEvent, handleClose, eventDetails }) => {
                 <>
                   <Card className={classes.root}>
                     <CardActionArea>
-                      <CardMedia
-                        className={classes.media}
-                        image={item.imageUrl}
-                        title="image"
-                      />
+                      <img className={classes.media} src={item.imageUrl} />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
-                          {item.title}
+                          
                         </Typography>
                         <Typography
                           variant="body2"
-                          color="textSecondary"
+                          color="textPrimary"
                           component="article"
                         >
-                          {item.description}
+                          <b>Post Description: </b>{item.description}
                           <br />
-                          Hashtags: {item.hashtags}
+                          <b>Hashtags:</b> {item.hashtags}
                           <br />
-                          Platform: {item.platform}
+                          <b>Platform(s):</b> {item.platform}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
