@@ -10,6 +10,7 @@ const { v4: uuidv4 } = require("uuid");
 const { format } = require("util");
 const multerS3 = require("multer-s3");
 const AWS = require("aws-sdk");
+require("dotenv").config();
 
 const app = express();
 const port = 85;
@@ -115,7 +116,7 @@ app.put("/:userid/add/:item_id", uploadS3.single("file"), (req, res) => {
       return res.status(200).send();
     } catch (error) {
       console.log(error);
-      return res.status(500).send(error);
+      return res.status(500).send(error + "This is whats broken");
     }
   })();
 });
