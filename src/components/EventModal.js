@@ -52,23 +52,26 @@ const EventModal = ({ openEvent, handleClose, eventDetails }) => {
                   <Card className={classes.root}>
                     <CardActionArea>
                       <img className={classes.media} src={item.imageUrl} />
-                      <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                          
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="textPrimary"
-                          component="article"
-                        >
-                          <b>Post Description: </b>{item.description}
-                          <br />
-                          <b>Hashtags:</b> {item.hashtags}
-                          <br />
-                          <b>Platform(s):</b> {item.platform}
-                        </Typography>
-                      </CardContent>
                     </CardActionArea>
+                    <CardContent>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="h2"
+                      ></Typography>
+                      <Typography
+                        variant="body2"
+                        color="textPrimary"
+                        component="article"
+                      >
+                        <b>Post Description: </b>
+                        {item.description}
+                        <br />
+                        <b>Hashtags:</b> {item.hashtags}
+                        <br />
+                        <b>Platform(s):</b> {item.platform}
+                      </Typography>
+                    </CardContent>
                     <CardActions></CardActions>
                   </Card>
                 </>
